@@ -18,20 +18,28 @@ class Board:
         return all(self.grid[0][c] != "." for c in range(COLS))
 
     def winner(self, token):
+        # Horizontal, vertical, diagonal down-right, diagonal down-left
+        directions = [
+            (0, 1),
+            (1, 0),
+            (1, 1),
+            (1, -1)
+        ]
 
-        directions = [(0, 1), (1, 0)]
         for r in range(ROWS):
             for c in range(COLS):
                 if self.grid[r][c] != token:
                     continue
+
                 for dr, dc in directions:
                     if all(
-                        0 <= r + i * dr < ROWS and
-                        0 <= c + i * dc < COLS and
-                        self.grid[r + i * dr][c + i * dc] == token
+                        0 <= r + i * dr < ROWS
+                        and 0 <= c + i * dc < COLS
+                        and self.grid[r + i * dr][c + i * dc] == token
                         for i in range(4)
                     ):
                         return True
+
         return False
 
     def print(self):

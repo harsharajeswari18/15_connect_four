@@ -10,30 +10,55 @@ class Game:
 
     def run(self):
         print("Connect Four — you are X.")
+
         while True:
             self.board.print()
+
             if self.turn == "X":
                 raw = input("Column (1-7), or q: ").strip().lower()
+
                 if raw == "q":
                     return
+
                 try:
                     col = int(raw) - 1
                 except ValueError:
                     print("Enter a column number.")
                     continue
+
+                if not 0 <= col < 7:
+                    print("Enter a column number.")
+                    continue
+
             else:
                 col = self.ai.choose_column(self.board)
 
-            if col is None or self.board.drop(col, self.turn) is None:
+                if col is None:
+                    self.board.print()
+                    print("AI has no available move. Draw.")
+                    return
+
+            # Attempt the actual move
+            row = self.board.drop(col, self.turn)
+
+            if row is None:
                 print("Column unavailable.")
+
                 if self.turn == "O":
                     return
+
                 continue
 
+            # Task 4: feedback exactly once for each successful move
+            print(self.turn, "placed in column", col + 1)
+
+            # Check win immediately after the actual move
             if self.board.winner(self.turn):
                 self.board.print()
                 print(self.turn, "wins!")
                 return
+
+            # Check draw before requesting another turn
             if self.board.full():
                 self.board.print()
                 print("Draw.")
